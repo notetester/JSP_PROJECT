@@ -1,0 +1,8 @@
+--INDEX는 PK, UNIQUE 키 제약 조건을 생성했을 때 자동으로 생성됩니다.
+--검색속도를 빠르게 해줍니다.
+CREATE TABLE EMPS AS (SELECT * FROM EMPLOYEES WHERE 1=1);
+SELECT * FROM EMPS;
+--인덱스 추가
+CREATE INDEX EMPS_FIRST_NAME_IDX ON EMPS(FIRST_NAME);--인덱스이름 ON 테이블명(컬럼명)
+--인덱스 삭제
+DROP INDEX EMPS_FIRST_NAME_IDX;

@@ -1,0 +1,7 @@
+package jdbc.test;
+
+public interface LoginBorn {
+	void loginMenu();
+	boolean doLogin();
+	void registMem();
+}

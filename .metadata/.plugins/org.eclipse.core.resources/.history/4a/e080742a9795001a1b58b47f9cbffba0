@@ -1,0 +1,11 @@
+package jdbc.test;
+
+public interface LoginBorn {
+	void getCount();
+	void getMEMBERLIST();
+	void getMEMBERMAP();
+	void getLoginMem();
+	void loginMenu();
+	void doLogin();
+	void registMem();
+}

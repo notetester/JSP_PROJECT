@@ -1,0 +1,43 @@
+package quiz32;
+
+import java.util.List;
+
+public class Point implements InterPoint {
+
+	@Override
+	public void showPointUI() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void input(List<Student> students) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showAll(List<Student> students) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void search(List<Student> students) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void modify(List<Student> students) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(List<Student> students) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

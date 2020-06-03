@@ -1,0 +1,60 @@
+
+/* Drop Triggers */
+
+DROP TRIGGER TRI_MEMBERS_NO;
+
+
+
+/* Drop Tables */
+
+DROP TABLE MEMBERS CASCADE CONSTRAINTS;
+
+
+
+/* Drop Sequences */
+
+DROP SEQUENCE SEQ_MEMBERS_NO;
+
+
+
+
+/* Create Sequences */
+
+CREATE SEQUENCE SEQ_MEMBERS_NO INCREMENT BY 1 START WITH 1;
+
+
+
+/* Create Tables */
+
+CREATE TABLE MEMBERS
+(
+	NO number(10,0) NOT NULL UNIQUE,
+	ID varchar2(30) NOT NULL UNIQUE,
+	PW varchar2(30) NOT NULL,
+	NAME varchar2(30) NOT NULL,
+	ADDRESS varchar2(30) NOT NULL,
+	PHONE varchar2(30) NOT NULL,
+	MEMBER_TYPE varchar2(30) NOT NULL,
+	USE_YN varchar2(1) DEFAULT 'Y' NOT NULL,
+	REGDATE date DEFAULT SYSDATE NOT NULL,
+	PRIMARY KEY (NO, ID),
+	CHECK(USE_YN IN('Y','N'))
+);
+
+
+
+/* Create Triggers */
+
+CREATE OR REPLACE TRIGGER TRI_MEMBERS_NO BEFORE INSERT ON MEMBERS
+FOR EACH ROW
+BEGIN
+	SELECT SEQ_MEMBERS_NO.nextval
+	INTO :new.NO
+	FROM dual;
+END;
+
+/
+
+
+
+

@@ -1,0 +1,46 @@
+package jdbc.basic;
+import java.sql.*;
+public class JDBCSelect {
+
+	public static void main(String[] args) {
+		/*
+		 * 	CREATE TABLE MEMBER01 (
+			    ID VARCHAR2(30) NOT NULL,
+			    PW VARCHAR2(30),
+			    NAME VARCHAR2(30),
+			    EMAIL VARCHAR2(30),
+			    ADDRESS VARCHAR2(50)
+			);
+			ALTER TABLE MEMBER01 ADD CONSTRAINT MEMBER01_PK PRIMARY KEY (ID);
+			INSERT INTO MEMBER01 VALUES('kkk123','1234','홍길동','kkk123@naver.com','서울시');
+			INSERT INTO MEMBER01 VALUES('aaa123','1234','홍길순','aaa123@naver.com','경기도');
+			INSERT INTO MEMBER01 VALUES('bbb123','1234','이순신','bbb123@naver.com','부산시');
+		 */
+		// JDBC 셀렉트
+		// 1. DB 연결에 필요한 접속 정보를 선언
+		String url="jdbc:oracle:thin:@localhost:1521/XEPDB1";
+		String uid="TEST01";
+		String upw="TEST01";
+		// 사용할 SQL문 String 변수에 저장
+		String sql="select * from member01 oerder by id desc";
+		// 2. DB 연동에 사용할 클래스 변수들을 선언
+		Connection conn=null; // DB 연결
+		PreparedStatement pstmt=null; // SQL 전송 객체
+		ResultSet rs=null; // 쿼리 결과 저장 객체
+		/*
+		 * java.sql 패키지에 클래스들을 사용하려면, 반드시 try~catch블록 안에서 사용합니다.
+		 * 그 이유는 해당 메서드들이 모두 예외 던지기 throws 처리가 되어있기 때문입니다.
+		 */
+		try {
+			// 3. Connector 안에 연결 드라이버를 호출
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			// 4. 커넥션 객체 생성
+			// 커넥션 객체 생성시에는 직접 new로 사용할 수 없고, DriverManager 클래스가 제공하는 getter 메서드를 통해서 생성
+			conn=DriverManager.getConnection(url,uid,upw);
+			System.out.println(conn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}

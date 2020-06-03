@@ -1,0 +1,9 @@
+package jdbc.basic;
+
+public class JDBCSelect4 {
+
+	public static void main(String[] args) {
+		//조인에 대한 처리
+	}
+
+}

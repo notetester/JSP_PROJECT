@@ -1,0 +1,15 @@
+package jdbc.command;
+
+import java.util.ArrayList;
+
+public class MemberBoard {
+	//주 테이블에 컬럼을 멤버변수, 부 테이브렝 대한 컬럼을 List표현
+	private String id;
+	private String pw;
+	private String name;
+	private String email;
+	private String address;
+	private ArrayList<Board01>list=new ArrayList<>();
+	//생성자
+	//게터,세터
+}

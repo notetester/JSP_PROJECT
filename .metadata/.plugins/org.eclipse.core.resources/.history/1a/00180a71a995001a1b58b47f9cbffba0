@@ -1,0 +1,14 @@
+package jdbc.test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public interface LoginBorn {
+	int getCount();
+	ArrayList<Mem> getMEMBERLIST();
+	HashMap<String, String> getMEMBERMAP();
+	Mem getLoginMem();
+	void loginMenu();
+	boolean doLogin();
+	void registMem();
+}

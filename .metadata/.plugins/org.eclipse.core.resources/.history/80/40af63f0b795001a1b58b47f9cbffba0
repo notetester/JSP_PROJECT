@@ -1,0 +1,181 @@
+package jdbc.test;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class Login implements LoginBorn{
+	private static final String URL="jdbc:oracle:thin:@localhost:1521/XEPDB1";
+	private static final String UID="TEST01";
+	private static final String UPW="TEST01";
+	private static Connection conn=null;
+	private static PreparedStatement pstmt=null;
+	private static ResultSet rs=null;
+	private static Mem loginMem=null;
+	private static int bNum=0,cNum=0,rBNum=0,rCNum=0,memberCount=0,boardCount=0,recomBCount=0,recomCCount=0,commentCount=0,temp=0;
+	private static String id="",pw="",name="",info="",title="",content="",sql="";
+	private static Timestamp regDate=null;
+	private static final Scanner SCANNER=new Scanner(System.in);
+	private static final ArrayList<Mem>MEMBERLIST=new ArrayList<>();
+	private static final HashMap<String,String>MEMBERMAP=new HashMap<String,String>();
+	private static final ArrayList<Board>BOARDLIST=new ArrayList<>();
+	private static final HashMap<Integer,String>BOARDMAP=new HashMap<Integer,String>();
+	private static final ArrayList<Com>COMMENTLIST=new ArrayList<>();
+	private static final HashMap<Integer,String>COMMENTMAP=new HashMap<Integer,String>();
+	private static final ArrayList<RecomB>RECOMBLIST=new ArrayList<>();
+	private static final HashMap<Integer,String>RECOMBMAP=new HashMap<Integer,String>();
+	private static final ArrayList<RecomC>RECOMCLIST=new ArrayList<>();
+	private static final HashMap<Integer,String>RECOMCMAP=new HashMap<Integer,String>();
+	private static final Login LOGIN=new Login();
+	public static final Login getInstance() {return LOGIN;}
+	private Login() {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn=DriverManager.getConnection(URL,UID,UPW);
+			sql="select * from mem";//멤버구문시작
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()) {
+				id=rs.getString("ID");
+				pw=rs.getString("PW");
+				name=rs.getString("NAME");
+				info=rs.getString("INFO");
+				Mem member=new Mem(id,pw,name,info);
+				MEMBERLIST.add(member);
+				MEMBERMAP.put(id,pw);
+				memberCount++;
+			}//멤버구문끝
+			sql="select * from board";//보드구문시작
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()) {
+				bNum=rs.getInt("BNUM");
+				id=rs.getString("ID");
+				title=rs.getString("TITLE");
+				content=rs.getString("CONTENT");
+				regDate=rs.getTimestamp("REGDATE");
+				Board board=new Board(bNum,id,title,content,regDate);
+				BOARDLIST.add(board);
+				BOARDMAP.put(bNum,content);
+				boardCount++;
+			}//보드구문끝
+			sql="select * from com";//댓글구문시작
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()) {
+				cNum=rs.getInt("CNUM");
+				bNum=rs.getInt("BNUM");
+				id=rs.getString("ID");
+				content=rs.getString("CONTENT");
+				regDate=rs.getTimestamp("REGDATE");
+				Com com=new Com(cNum,bNum,id,content,regDate);
+				COMMENTLIST.add(com);
+				COMMENTMAP.put(cNum,content);
+				commentCount++;
+			}//댓글구문끝
+			/*
+			 * 
+			 */
+			sql="select * from recomb";//글 좋아요 구문 시작
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()) {
+				rBNum=rs.getInt("RBNUM");
+				bNum=rs.getInt("BNUM");
+				id=rs.getString("ID");
+				RecomB recomB=new RecomB(rBNum,bNum,id);
+				RECOMBLIST.add(recomB);
+				RECOMBMAP.put(rBNum,id);
+				recomBCount++;
+			}//글 좋아요 구문 끝
+			sql="select * from recomc";//댓글 좋아요 구문 시작
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()) {
+				rCNum=rs.getInt("RCNUM");
+				cNum=rs.getInt("CNUM");
+				id=rs.getString("ID");
+				RecomC recomC=new RecomC(rCNum,cNum,id);
+				RECOMCLIST.add(recomC);
+				RECOMCMAP.put(rCNum,id);
+				recomCCount++;
+			}//댓글 좋아요 구문 끝
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public final void loginMenu() {
+		System.out.println("===================");
+		System.out.println("1. 로그인하기");
+		System.out.println("2. 회원가입");
+		System.out.println("3. 종료");
+		System.out.println("===================");
+	}
+	public final boolean doLogin() {
+		System.out.println("아이디를 입력하세요.");
+		id=SCANNER.next();
+		System.out.println("비밀번호를 입력하세요");
+		pw=SCANNER.next();
+		sql="select * from mem where id=? and pw=?";
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1,id);
+			pstmt.setString(2,pw);
+			rs=pstmt.executeQuery();
+			temp=0;
+			while(rs.next()) {
+				id=rs.getString("ID");
+				pw=rs.getString("PW");
+				name=rs.getString("NAME");
+				info=rs.getString("INFO");
+				temp++;
+			}
+			if(temp==1) {
+				loginMem=new Mem(id,pw,name,info);
+				System.out.println("로그인 성공");
+				return true;
+			}else {
+				System.out.println("아이디 혹은 비밀번호가 잘못되었습니다.");
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public final void registMem() {
+		System.out.println("신규 등록할 회원의 아이디를 입력하세요.");
+		id=SCANNER.next();
+		if(MEMBERMAP.containsKey(id)) {
+			System.out.println("이미 등록된 아이디입니다.");
+		}else {
+			System.out.println("신규 등록할 회원의 비밀번호를 입력하세요.");
+			pw=SCANNER.next();
+			System.out.println("신규 등록할 회원의 이름을 입력하세요.");
+			name=SCANNER.next();
+			System.out.println("신규 등록할 회원의 정보를 입력하세요.");
+			info=SCANNER.next();
+			sql="insert into mem values(?,?,?,?)";
+			try {
+				pstmt=conn.prepareStatement(sql);
+				pstmt.setString(1,id);
+				pstmt.setString(2,pw);
+				pstmt.setString(3,name);
+				pstmt.setString(4,info);
+				temp=pstmt.executeUpdate();
+				if(temp==1) {
+					Mem member=new Mem(id,pw,name,info);
+					MEMBERLIST.add(member);
+					MEMBERMAP.put(id,pw);
+					memberCount++;
+					System.out.println("회원 가입 성공");
+				}else {
+					System.out.println("회원 가입 실패");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
